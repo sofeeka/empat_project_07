@@ -1,28 +1,11 @@
+import 'package:empat_project_07/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bored.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-class ThemeCubit extends Cubit<bool> {
-  ThemeCubit() : super(false);
-
-  void toggleTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool darkMode = !state;
-    emit(darkMode);
-    prefs.setBool('darkMode', darkMode);
-  }
-
-  void loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool darkMode = prefs.getBool('darkMode') ?? false;
-    emit(darkMode);
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -72,6 +55,7 @@ class ThemeSwitcher extends StatelessWidget {
                 BlocProvider.of<ThemeCubit>(context).toggleTheme();
               },
             ),
+            const SizedBox(height: 50),
             const Bored(),
           ],
         ),

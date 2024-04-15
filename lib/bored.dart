@@ -13,10 +13,20 @@ class Bored extends StatefulWidget {
 class _BoredState extends State<Bored> {
   final ApiService apiService = ApiService();
   late Future<BoredActivity> futureActivity;
+  late BoredActivity displayedActivity;
 
   @override
   void initState() {
     super.initState();
+    displayedActivity = BoredActivity(
+      activity: 'Press the button to get activity',
+      type: '',
+      participants: 0,
+      price: 0.0,
+      link: '',
+      key: '',
+      accessibility: 0.0,
+    );
     futureActivity = apiService.fetchData();
   }
 
@@ -28,9 +38,11 @@ class _BoredState extends State<Bored> {
         children: [
           ElevatedButton(
             onPressed: () {
-              setState(() {
-                futureActivity = apiService.fetchData();
-              });
+              apiService.fetchData().then((activity) {
+                setState(() {
+                  displayedActivity = activity;
+                });
+              }).catchError((error) {});
             },
             child: const Text('Random Activity'),
           ),
@@ -44,9 +56,8 @@ class _BoredState extends State<Bored> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-              String activity = snapshot.data!.activity;
               return Text(
-                activity,
+                displayedActivity.activity,
                 style: Theme.of(context).textTheme.headline5,
                 textAlign: TextAlign.center,
               );
